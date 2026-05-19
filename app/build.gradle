@@ -114,7 +114,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'game_engine_opengl2.App'
+    mainClass = 'game_engine_opengl2.launcher'
 }
 
 tasks.named('test') {
