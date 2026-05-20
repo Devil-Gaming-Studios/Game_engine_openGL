@@ -13,7 +13,7 @@ public class WindowManager {
     public static final float Z_NEAR = 0.01f;
     public static final float Z_FAR = 1000f;
 
-    private final String title;
+    private String title;
 
     private int width, height;
     private long window;
@@ -133,7 +133,7 @@ public class WindowManager {
         GLFW.glfwDestroyWindow(window);
     }
 
-    public void setClearColor(float r, float b, float g, float a)
+    public void setClearColour(float r, float b, float g, float a)
     {
         GL11.glClearColor(r,b,g,a);
     }
@@ -151,6 +151,7 @@ public class WindowManager {
     public void setTitle(String title)
     {
         GLFW.glfwSetWindowTitle(window, title);
+        this.title = title;
     }
 
     public String getTitle()

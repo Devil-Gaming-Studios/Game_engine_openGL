@@ -8,18 +8,21 @@ public class EngineManager {
     public static final float FRAMERATE= 1000;
 
     private static int fps;
-    private static float frametime = 1.0f/FRAMERATE;
+    private static final float FRAMETIME = 1.0f/FRAMERATE;
 
         private boolean isRunning;
 
         private WindowManager window;
         private GLFWErrorCallback errorCallback;
+        private ILogic gameLogic;
 
         private void init() throws Exception
         {
             GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
             window = launcher.getWindow();
+            gameLogic = launcher.getGame();
             window.init();
+            gameLogic.init();
         }
 
         public void start() throws Exception
@@ -50,10 +53,10 @@ public class EngineManager {
 
                 input();
 
-                while(unprocessedTime > frametime)
+                while(unprocessedTime > FRAMETIME)
                 {
                     render = true;
-                    unprocessedTime -= frametime;
+                    unprocessedTime -= FRAMETIME;
                     
                     if(window.windowShouldClose())
                         stop();
@@ -94,18 +97,22 @@ public class EngineManager {
         }
         private void input()
         {
-
+            gameLogic.input();
         }
         private void render()
         {
+            gameLogic.render();
             window.update();
         }
         private void update()
-        {}
+        {
+            gameLogic.update();
+        }
 
         private void cleanup()
         {
             window.cleanup();
+            gameLogic.cleanup();
             errorCallback.free();
             GLFW.glfwTerminate();
         }
