@@ -65,7 +65,7 @@ public class EngineManager {
                     {
                         setFps(frames);
                         window.setTitle(Consts.TITLE + getFps());
-                        System.out.println(getFps());
+                        //System.out.println(getFps());
                         frames = 0;
                         frameCounter = 0;
                     }
