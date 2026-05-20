@@ -1,6 +1,8 @@
 package game_engine_opengl2;
 
 public class launcher {
+    private static WindowManager window;
+    private static EngineManager engine;
     public String getGreeting() {
         return "Welcome to Game Engine OpenGL2";
     }
@@ -10,12 +12,20 @@ public class launcher {
         launcher app = new launcher();
         System.out.println(app.getGreeting());
         
-        WindowManager window = new WindowManager("Game Engine",1600,900,false);
-        window.init();
-        while(!window.windowShouldClose())
+        window = new WindowManager(Consts.TITLE ,0,0,false);
+        engine = new EngineManager();
+        try
         {
-            window.update();
+            engine.start();
         }
-        window.cleanup();
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
+    public static WindowManager getWindow()
+    {
+        return window;
     }
 }
