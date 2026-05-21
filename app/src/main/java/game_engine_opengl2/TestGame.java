@@ -3,6 +3,8 @@ package game_engine_opengl2;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import entity.Model;
+
 public class TestGame implements ILogic
 {
     
@@ -11,18 +13,31 @@ public class TestGame implements ILogic
 
     private final RenderManager renderer;
     private final WindowManager window;
+    public final ObjectLoader loader;
 
+    private Model model;
     public TestGame()
     {
         renderer = new RenderManager();
         window = launcher.getWindow();
-
+        loader = new ObjectLoader();
     }
 
     @Override
     public void init() throws Exception
     {
         renderer.init();
+
+        float[] vertices =
+        {
+            -0.5f, 0.5f , 0f,
+            -0.5f, -0.5f, 0f,
+            0.5f, -0.5f, 0f,
+            0.5f, -0.5f, 0f,
+            0.5f, 0.5f, 0f,
+            -0.5f, 0.5f, 0f
+            };
+            model = loader.loadModel(vertices);
     }
 
     @Override
@@ -61,12 +76,13 @@ public class TestGame implements ILogic
         }
 
         window.setClearColour(colour,colour,colour,0.0f);
-        renderer.clear();
+        renderer.render(model);
     }
 
     @Override
     public void cleanup()
     {
         renderer.cleanup();
+        loader.cleanup();
     }
 }
