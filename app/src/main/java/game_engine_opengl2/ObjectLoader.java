@@ -1,6 +1,7 @@
 package game_engine_opengl2;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +17,13 @@ public class ObjectLoader {
     private List<Integer> vbos = new ArrayList<>();
     private List<Integer> vaos = new ArrayList<>();
 
-    public Model loadModel(float[] vertices)
+    public Model loadModel(float[] vertices, int[] indices)
     {
         int id =  createVAO();
+        storeIndicesBuffer(indices);
         storeDataInAttribList(0, 3, vertices);
         unbind();
-        return new Model(id,vertices.length/3);
+        return new Model(id,indices.length);
     }
 
     private int createVAO()
@@ -32,6 +34,16 @@ public class ObjectLoader {
         return id;
 
     }
+
+    private void storeIndicesBuffer(int[] indices)
+    {
+        int vbo = GL15.glGenBuffers();
+        vbos.add(vbo);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vbo);
+        IntBuffer buffer = Utils.storeDataInIntBuffer(indices);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+    }
+
     private void storeDataInAttribList(int attribNo, int vertexCount, float[] data)
     {
         int vbo = GL15.glGenBuffers();//creates the empty buffer
