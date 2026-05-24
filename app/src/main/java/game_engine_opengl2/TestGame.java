@@ -1,5 +1,6 @@
 package game_engine_opengl2;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -10,7 +11,7 @@ import entity.Texture;
 
 public class TestGame implements ILogic
 {
-    private static final float CAMERA_MOVE_SPEED = 0.05f;
+    private static final float CAMERA_MOVE_SPEED = Consts.CAMERA_STEP;
 
     private final RenderManager renderer;
     private final WindowManager window;
@@ -114,11 +115,16 @@ public class TestGame implements ILogic
     }
 
     @Override
-    public void update()
+    public void update(MouseInput mouseInput)
     {
         camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y*CAMERA_MOVE_SPEED, cameraInc.z*CAMERA_MOVE_SPEED);
 
-        entity.incRotation(0.0f ,0.5f, 0.0f);
+        if(mouseInput.isRightButtonPress())
+        {
+            Vector2f rotVec = mouseInput.getDisplVec();
+            camera.moveRotation(rotVec.x * Consts.MOUSE_SENSITIVITY, rotVec.y * Consts.MOUSE_SENSITIVITY, 0);
+        }
+        //entity.incRotation(0.0f ,0.5f, 0.0f);
     }   
 
     @Override

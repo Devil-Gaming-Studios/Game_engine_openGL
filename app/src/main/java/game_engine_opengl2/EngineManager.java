@@ -15,6 +15,7 @@ public class EngineManager {
         private WindowManager window;
         private GLFWErrorCallback errorCallback;
         private ILogic gameLogic;
+        private MouseInput mouseInput;
 
         private void init() throws Exception
         {
@@ -23,6 +24,8 @@ public class EngineManager {
             gameLogic = launcher.getGame();
             window.init();
             gameLogic.init();
+            mouseInput = new MouseInput();
+            mouseInput.init();
         }
 
         public void start() throws Exception
@@ -97,6 +100,7 @@ public class EngineManager {
         }
         private void input()
         {
+            mouseInput.input();
             gameLogic.input();
         }
         private void render()
@@ -106,7 +110,7 @@ public class EngineManager {
         }
         private void update()
         {
-            gameLogic.update();
+            gameLogic.update(mouseInput);
         }
 
         private void cleanup()
