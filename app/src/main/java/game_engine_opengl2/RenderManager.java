@@ -6,8 +6,11 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import entity.Entity;
 import entity.Model;
+import game_engine_opengl2.utils.Transformation;
 import game_engine_opengl2.utils.Utils;
+
 
 public class RenderManager {
     private final WindowManager window;
@@ -25,13 +28,16 @@ public class RenderManager {
         shader.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
         shader.link();
         shader.createUniform("textureSampler");
+        shader.createUniform("transformationMatrix");
     }
 
-    public void render(Model model)
+    public void render(Entity entity)
     {
+        Model model = entity.getModel();
         clear();
         shader.bind();
         shader.setUniform("textureSampler",0);
+        shader.setUniform("transformationMatrix",Transformation.createTransformationMatrix(entity));
         GL30.glBindVertexArray(model.getId());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);

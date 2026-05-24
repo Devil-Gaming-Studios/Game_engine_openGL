@@ -1,8 +1,10 @@
 package game_engine_opengl2;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import entity.Entity;
 import entity.Model;
 import entity.Texture;
 
@@ -16,7 +18,8 @@ public class TestGame implements ILogic
     private final WindowManager window;
     public final ObjectLoader loader;
 
-    private Model model;
+    private Entity entity;
+    
     public TestGame()
     {
         renderer = new RenderManager();
@@ -47,8 +50,9 @@ public class TestGame implements ILogic
                 1,1,
                 1,0
             };
-            model = loader.loadModel(vertices,textureCoords,indices);
-            model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.png")));
+            Model model = loader.loadModel(vertices,textureCoords,indices);
+            model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.jpg")));
+            entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
     }
 
     @Override
@@ -75,6 +79,12 @@ public class TestGame implements ILogic
             colour = 0.0f;
         }
 
+        if(entity.getPos().x < -1.5f)
+        {
+            entity.getPos().x = 1.5f;
+        }
+        entity.getPos().x -= 0.01;
+
     }
 
     @Override
@@ -87,7 +97,7 @@ public class TestGame implements ILogic
         }
 
         window.setClearColour(colour,colour,colour,0.0f);
-        renderer.render(model);
+        renderer.render(entity);
     }
 
     @Override
