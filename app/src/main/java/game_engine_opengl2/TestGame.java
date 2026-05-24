@@ -10,82 +10,116 @@ import entity.Texture;
 
 public class TestGame implements ILogic
 {
-    
-    private int direction = 0 ;
-    private float colour = 0.0f;
+    private static final float CAMERA_MOVE_SPEED = 0.05f;
 
     private final RenderManager renderer;
     private final WindowManager window;
     public final ObjectLoader loader;
 
     private Entity entity;
+    private Camera camera;
     
+    Vector3f cameraInc;
     public TestGame()
     {
         renderer = new RenderManager();
         window = launcher.getWindow();
         loader = new ObjectLoader();
+        camera = new Camera();
+        cameraInc = new Vector3f(0,0,0);
     }
 
     @Override
     public void init() throws Exception
     {
         renderer.init();
-
-        float[] vertices = {
-        -0.5f,  0.5f, 0f,
-        -0.5f, -0.5f, 0f,
-        0.5f, -0.5f, 0f,
-        0.5f,  0.5f, 0f,
+        float[] vertices = new float[] {
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
         };
-
-            int[] indices = {
-                0,1,3,
-                3,1,2
-            };
-
-            float[] textureCoords = {
-                0,0,
-                0,1,
-                1,1,
-                1,0
-            };
+        float[] textureCoords = new float[]{
+                    0.0f, 0.0f,
+                    0.0f, 0.5f,
+                    0.5f, 0.5f,
+                    0.5f, 0.0f,
+                    0.0f, 0.0f,
+                    0.5f, 0.0f,
+                    0.0f, 0.5f,
+                    0.5f, 0.5f,
+                    0.0f, 0.5f,
+                    0.5f, 0.5f,
+                    0.0f, 1.0f,
+                    0.5f, 1.0f,
+                    0.0f, 0.0f,
+                    0.0f, 0.5f,
+                    0.5f, 0.0f,
+                    0.5f, 0.5f,
+                    0.5f, 0.0f,
+                    1.0f, 0.0f,
+                    0.5f, 0.5f,
+                    1.0f, 0.5f,
+        };
+        int[] indices = new int[]{
+                    0, 1, 3, 3, 1, 2,
+                    8, 10, 11, 9, 8, 11,
+                    12, 13, 7, 5, 12, 7,
+                    14, 15, 6, 4, 14, 6,
+                    16, 18, 19, 17, 16, 19,
+                    4, 6, 7, 5, 4, 7,
+        };
+      
             Model model = loader.loadModel(vertices,textureCoords,indices);
             model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.jpg")));
             entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
+            
     }
 
     @Override
     public void input()
     {
+        cameraInc.set(0,0,0);
+        if(window.isKeyPressed(GLFW.GLFW_KEY_W))
+            cameraInc.z = -1;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_S))
+            cameraInc.z = 1;
+        
+        if(window.isKeyPressed(GLFW.GLFW_KEY_A))
+            cameraInc.x = -1;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_D))
+            cameraInc.x = 1;
+
         if(window.isKeyPressed(GLFW.GLFW_KEY_UP))
-            direction = 1;
-        else if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
-            direction = -1;
-        else
-            direction = 0;
+            cameraInc.y = -1;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
+            cameraInc.y = 1;
+        
     }
 
     @Override
     public void update()
     {
-        colour += direction * 0.01f;
-        if(colour > 1)
-        {
-            colour = 1.0f;
-        }   
-        else if(colour <= 0)
-        {
-            colour = 0.0f;
-        }
+        camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y*CAMERA_MOVE_SPEED, cameraInc.z*CAMERA_MOVE_SPEED);
 
-        if(entity.getPos().x < -1.5f)
-        {
-            entity.getPos().x = 1.5f;
-        }
-        entity.getPos().x -= 0.01;
-
-    }
+        entity.incRotation(0.0f ,0.5f, 0.0f);
+    }   
 
     @Override
     public void render()
@@ -96,8 +130,8 @@ public class TestGame implements ILogic
             window.setResize(true);
         }
 
-        window.setClearColour(colour,colour,colour,0.0f);
-        renderer.render(entity);
+        window.setClearColour(0.0f,0.0f,0.0f,0.0f);
+        renderer.render(entity,camera);
     }
 
     @Override
