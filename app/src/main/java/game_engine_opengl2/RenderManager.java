@@ -16,9 +16,9 @@ public class RenderManager {
     private final WindowManager window;
     private ShaderManager shader;
 
-    public RenderManager()
+    public RenderManager(WindowManager windowManager)
     {
-        window = launcher.getWindow();
+        window = windowManager;
     }
 
     public void init() throws Exception

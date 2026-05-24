@@ -117,8 +117,8 @@ public class WindowManager {
     GL11.glClearColor(0.0f,0.0f,0.0f,0.0f);
     GL11.glEnable(GL11.GL_DEPTH_TEST);//Enables depth
     GL11.glEnable(GL11.GL_STENCIL_TEST);//enables stencil(masks) where drawing should be controlled
-    //GL11.glEnable(GL11.GL_CULL_FACE);//hides the back sides of the triangles need not to rendered 
-    //GL11.glCullFace(GL11.GL_BACK);
+    GL11.glEnable(GL11.GL_CULL_FACE);//hides the back sides of the triangles need not to rendered 
+    GL11.glCullFace(GL11.GL_BACK);
     }
 
     //updates the screen by swapping the back and front buffer

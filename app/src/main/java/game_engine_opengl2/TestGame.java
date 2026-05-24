@@ -21,10 +21,11 @@ public class TestGame implements ILogic
     private Camera camera;
     
     Vector3f cameraInc;
-    public TestGame()
+    
+    public TestGame(WindowManager windowManager)
     {
-        renderer = new RenderManager();
-        window = launcher.getWindow();
+        renderer = new RenderManager(windowManager);
+        window = windowManager;
         loader = new ObjectLoader();
         camera = new Camera();
         cameraInc = new Vector3f(0,0,0);
@@ -34,60 +35,60 @@ public class TestGame implements ILogic
     public void init() throws Exception
     {
         renderer.init();
-        float[] vertices = new float[] {
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-        };
-        float[] textureCoords = new float[]{
-                    0.0f, 0.0f,
-                    0.0f, 0.5f,
-                    0.5f, 0.5f,
-                    0.5f, 0.0f,
-                    0.0f, 0.0f,
-                    0.5f, 0.0f,
-                    0.0f, 0.5f,
-                    0.5f, 0.5f,
-                    0.0f, 0.5f,
-                    0.5f, 0.5f,
-                    0.0f, 1.0f,
-                    0.5f, 1.0f,
-                    0.0f, 0.0f,
-                    0.0f, 0.5f,
-                    0.5f, 0.0f,
-                    0.5f, 0.5f,
-                    0.5f, 0.0f,
-                    1.0f, 0.0f,
-                    0.5f, 0.5f,
-                    1.0f, 0.5f,
-        };
-        int[] indices = new int[]{
-                    0, 1, 3, 3, 1, 2,
-                    8, 10, 11, 9, 8, 11,
-                    12, 13, 7, 5, 12, 7,
-                    14, 15, 6, 4, 14, 6,
-                    16, 18, 19, 17, 16, 19,
-                    4, 6, 7, 5, 4, 7,
-        };
+        // float[] vertices = new float[] {
+        //     -0.5f, 0.5f, 0.5f,
+        //     -0.5f, -0.5f, 0.5f,
+        //     0.5f, -0.5f, 0.5f,
+        //     0.5f, 0.5f, 0.5f,
+        //     -0.5f, 0.5f, -0.5f,
+        //     0.5f, 0.5f, -0.5f,
+        //     -0.5f, -0.5f, -0.5f,
+        //     0.5f, -0.5f, -0.5f,
+        //     -0.5f, 0.5f, -0.5f,
+        //     0.5f, 0.5f, -0.5f,
+        //     -0.5f, 0.5f, 0.5f,
+        //     0.5f, 0.5f, 0.5f,
+        //     0.5f, 0.5f, 0.5f,
+        //     0.5f, -0.5f, 0.5f,
+        //     -0.5f, 0.5f, 0.5f,
+        //     -0.5f, -0.5f, 0.5f,
+        //     -0.5f, -0.5f, -0.5f,
+        //     0.5f, -0.5f, -0.5f,
+        //     -0.5f, -0.5f, 0.5f,
+        //     0.5f, -0.5f, 0.5f,
+        // };
+        // float[] textureCoords = new float[]{
+        //             0.0f, 0.0f,
+        //             0.0f, 0.5f,
+        //             0.5f, 0.5f,
+        //             0.5f, 0.0f,
+        //             0.0f, 0.0f,
+        //             0.5f, 0.0f,
+        //             0.0f, 0.5f,
+        //             0.5f, 0.5f,
+        //             0.0f, 0.5f,
+        //             0.5f, 0.5f,
+        //             0.0f, 1.0f,
+        //             0.5f, 1.0f,
+        //             0.0f, 0.0f,
+        //             0.0f, 0.5f,
+        //             0.5f, 0.0f,
+        //             0.5f, 0.5f,
+        //             0.5f, 0.0f,
+        //             1.0f, 0.0f,
+        //             0.5f, 0.5f,
+        //             1.0f, 0.5f,
+        // };
+        // int[] indices = new int[]{
+        //             0, 1, 3, 3, 1, 2,
+        //             8, 10, 11, 9, 8, 11,
+        //             12, 13, 7, 5, 12, 7,
+        //             14, 15, 6, 4, 14, 6,
+        //             16, 18, 19, 17, 16, 19,
+        //             4, 6, 7, 5, 4, 7,
+        // };
       
-            Model model = loader.loadModel(vertices,textureCoords,indices);
+            Model model = loader.loadResourceModel("/models/cube.obj");
             model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.jpg")));
             entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
             

@@ -15,7 +15,7 @@ public class launcher {
         System.out.println(app.getGreeting());
         
         window = new WindowManager(Consts.TITLE, 0, 0, false);
-        game = new TestGame();
+        game = new TestGame(window);
         engine = new EngineManager();
         
         try
@@ -25,6 +25,7 @@ public class launcher {
         catch(Exception e)
         {
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
