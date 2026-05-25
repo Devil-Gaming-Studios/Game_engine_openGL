@@ -71,10 +71,16 @@ public class ObjectLoader {
                     normals.add(normalsVec);
                     break;
                 case "f":
-                    //faces
                     processFace(tokens[1], faces);
                     processFace(tokens[2], faces);
                     processFace(tokens[3], faces);
+                    // Triangle 2: v1, v3, v4  (fan triangulation)
+                    if(tokens.length == 5)
+                    {
+                        processFace(tokens[1], faces);
+                        processFace(tokens[3], faces);
+                        processFace(tokens[4], faces);
+                    }
                     break;
                 default:
                     break;
@@ -97,7 +103,7 @@ public class ObjectLoader {
         for(Vector3i face : faces)
         {
             processVertex(face.x, face.y, face.z, texture ,normals, indices, textCoordArr, normalArr );
-        }
+        } 
 
         int[] indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
@@ -141,9 +147,7 @@ public class ObjectLoader {
         Vector3i facesVec = new Vector3i(pos, coords, normal);
         faces.add(facesVec);
     }
-    {
 
-    }
     public Model loadModel(float[] vertices,float[] textureCoords, int[] indices)
     {
         int id =  createVAO();
