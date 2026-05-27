@@ -118,8 +118,8 @@ public class WindowManager {
     GL11.glEnable(GL11.GL_DEPTH_TEST);//Enables depth
     GL11.glEnable(GL11.GL_STENCIL_TEST);//enables stencil(masks) where drawing should be controlled
     //GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE); // wireframe both sides
-    // GL11.glEnable(GL11.GL_CULL_FACE);//hides the back sides of the triangles need not to rendered 
-    // GL11.glCullFace(GL11.GL_BACK);
+    GL11.glEnable(GL11.GL_CULL_FACE);//hides the back sides of the triangles need not to rendered 
+    GL11.glCullFace(GL11.GL_BACK);
     }
 
     //updates the screen by swapping the back and front buffer

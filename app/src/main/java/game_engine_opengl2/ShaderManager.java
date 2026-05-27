@@ -9,6 +9,8 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import entity.Material;
+
 public class ShaderManager {
     private final int programID;
     private int vertexShaderID, fragmentShaderID;
@@ -31,6 +33,14 @@ public class ShaderManager {
         if(uniformLocation < 0)
             throw new Exception("could not find uniform" + uniformName);
         uniforms.put(uniformName, uniformLocation);
+    }
+
+    public void createMaterialUniform(String uniformName) throws Exception
+    {
+        createUniform(uniformName + ".ambient");
+        createUniform(uniformName + ".diffuse");
+        createUniform(uniformName + ".specular");
+        createUniform(uniformName + ".hasTexture");
     }
 
     public void setUniform(String uniformname,Matrix4f value)
@@ -57,6 +67,14 @@ public class ShaderManager {
         if(value)
             res = 1;
         GL20.glUniform1f(uniforms.get(uniformName),res);
+    }
+
+    public void setUniform(String uniformName, Material material)
+    {
+        setUniform(uniformName + ".ambient", material.getAmbientColour());
+        setUniform(uniformName + ".diffuse",material.getDiffuseColour());
+        setUniform(uniformName + ".specular",material.getSpecularColour());
+        setUniform(uniformName + ".hasTexture",material.hasTexture() ? 1:0);
     }
 
     public void setUniform( String uniformname,int value)

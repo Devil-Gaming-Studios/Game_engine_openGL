@@ -89,7 +89,7 @@ public class TestGame implements ILogic
         // };
       
             Model model = loader.loadResourceModel("/models/Datsun_280Z.obj");
-            model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.jpg")));
+            model.setTexture(new Texture(loader.loadResourceTexture("/textures/grassblock.jpg")),1.0f);
             entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
             
     }

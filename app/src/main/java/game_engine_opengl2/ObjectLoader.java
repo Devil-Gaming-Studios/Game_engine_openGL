@@ -107,7 +107,7 @@ public class ObjectLoader {
 
         int[] indicesArr = indices.stream().mapToInt((Integer v) -> v).toArray();
 
-        return loadModel(verticesArr, textCoordArr, indicesArr);
+        return loadModel(verticesArr, textCoordArr,normalArr, indicesArr);
     }
     
     private static void processVertex(int pos, int textCoord, int normal, List<Vector2f> textCoordList, List<Vector3f> normalList, List<Integer> indicesList, float[] textCoordArr, float[] normalArr)
@@ -148,12 +148,13 @@ public class ObjectLoader {
         faces.add(facesVec);
     }
 
-    public Model loadModel(float[] vertices,float[] textureCoords, int[] indices)
+    public Model loadModel(float[] vertices,float[] textureCoords,float[] normals, int[] indices)
     {
         int id =  createVAO();
         storeIndicesBuffer(indices);
         storeDataInAttribList(0, 3, vertices);
         storeDataInAttribList(1, 2, textureCoords);
+        storeDataInAttribList(2, 3, normals);
         unbind();
         return new Model(id,indices.length);
     }
@@ -268,6 +269,7 @@ public class ObjectLoader {
                     0.5f, 0.5f,
                     1.0f, 0.5f,
         };
+
         int[] indices = new int[]{
                     0, 1, 3, 3, 1, 2,
                     8, 10, 11, 9, 8, 11,
@@ -276,7 +278,10 @@ public class ObjectLoader {
                     16, 18, 19, 17, 16, 19,
                     4, 6, 7, 5, 4, 7,
         };
-        return loadModel(vertices, textureCoords, indices);
+
+        float[] normals = new float[]{0,0};
+        
+        return loadModel(vertices, textureCoords, normals ,indices);
     }
 
     private int createPlaceholderTexture()
