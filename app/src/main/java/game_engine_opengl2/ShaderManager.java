@@ -11,6 +11,7 @@ import org.lwjgl.system.MemoryStack;
 
 import entity.Material;
 import game_engine_opengl2.lighting.DirectionalLight;
+import game_engine_opengl2.lighting.PointLight;
 
 public class ShaderManager {
     private final int programID;
@@ -51,6 +52,18 @@ public class ShaderManager {
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".reflectance");
     }
+
+    public void createPointLightUniform(String uniformName) throws Exception
+    {
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".position");
+        createUniform(uniformName + ".intensity");
+        createUniform(uniformName + ".linear");
+        createUniform(uniformName + ".exponent");
+        createUniform(uniformName + ".constant");
+    }
+
+   
 
     public void setUniform(String uniformname,Matrix4f value)
     {
@@ -93,6 +106,16 @@ public class ShaderManager {
         setUniform(uniformName + ".colour", directionalLight.getColour());
         setUniform(uniformName + ".direction", directionalLight.getDirection());
         setUniform(uniformName + ".intensity", directionalLight.getIntensity());
+    }
+
+    public void setUniform(String uniformName,PointLight pointLight)
+    {
+        setUniform(uniformName+".colour",pointLight.getColour());
+        setUniform(uniformName+".position",pointLight.getPosition());
+        setUniform(uniformName+".intensity",pointLight.getIntensity());
+        setUniform(uniformName+".linear",pointLight.getLinear());
+        setUniform(uniformName+".exponent",pointLight.getExponent());
+        setUniform(uniformName+".constant", pointLight.getConstant());
     }
 
     public void setUniform( String uniformname,int value)

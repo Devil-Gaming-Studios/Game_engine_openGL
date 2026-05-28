@@ -11,6 +11,7 @@ import entity.Entity;
 import entity.Model;
 import entity.Texture;
 import game_engine_opengl2.lighting.DirectionalLight;
+import game_engine_opengl2.lighting.PointLight;
 
 public class TestGame implements ILogic
 {
@@ -27,6 +28,7 @@ public class TestGame implements ILogic
 
     private float lightAngle;
     private DirectionalLight directionalLight;
+    private PointLight pointLight;
     
     public TestGame(WindowManager windowManager)
     {
@@ -99,9 +101,14 @@ public class TestGame implements ILogic
             model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
             entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
             
-            float lightIntensity = 0.0f;
-            Vector3f lightPosition = new Vector3f(-1,-10,0);
+            float lightIntensity = 1.0f;
+            Vector3f lightPosition = new Vector3f(0,0,-3.2f);
             Vector3f lightColour = new Vector3f(1,1,1);
+            pointLight = new PointLight(lightColour,lightPosition, lightIntensity, 0,0,1);
+
+
+            lightPosition = new Vector3f(-1,-10,0);
+            lightColour = new Vector3f(1,1,1);
             directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
     }
 
@@ -123,7 +130,16 @@ public class TestGame implements ILogic
             cameraInc.y = -1;
         if(window.isKeyPressed(GLFW.GLFW_KEY_DOWN))
             cameraInc.y = 1;
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_0))
+        {
+            pointLight.getPosition().x += 0.1f;
+        }
         
+        if(window.isKeyPressed(GLFW.GLFW_KEY_P))
+        {
+            pointLight.getPosition().x -= 0.1f;
+        }
     }
 
     @Override
@@ -173,7 +189,7 @@ public class TestGame implements ILogic
         }
 
         window.setClearColour(0.0f,0.0f,0.0f,0.0f);
-        renderer.render(entity,camera,directionalLight);
+        renderer.render(entity,camera,directionalLight,pointLight);
     }
 
     @Override

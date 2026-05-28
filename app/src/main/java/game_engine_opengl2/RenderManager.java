@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import entity.Entity;
 import entity.Model;
 import game_engine_opengl2.lighting.DirectionalLight;
+import game_engine_opengl2.lighting.PointLight;
 import game_engine_opengl2.utils.Transformation;
 import game_engine_opengl2.utils.Utils;
 
@@ -41,9 +42,10 @@ public class RenderManager {
         shader.createMaterialUniform("material");
         shader.createUniform("specularPower");
         shader.createDirectionalLightUniform("directionalLight");
+        shader.createPointLightUniform("pointLight");
     }
 
-    public void render(Entity entity, Camera camera, DirectionalLight directionalLight)
+    public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight)
     {
         Model model = entity.getModel();
         clear();
@@ -62,6 +64,7 @@ public class RenderManager {
         shader.setUniform("ambientLight",Consts.AMBIENT_LIGHT);
         shader.setUniform("specularPower",Consts.SPECULAR_POWER);
         shader.setUniform("directionalLight", directionalLight);
+        shader.setUniform("pointLight",pointLight);
 
         GL30.glBindVertexArray(model.getId());
         GL20.glEnableVertexAttribArray(0);
