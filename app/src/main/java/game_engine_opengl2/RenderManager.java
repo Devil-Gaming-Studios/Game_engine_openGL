@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import entity.Entity;
 import entity.Model;
+import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.utils.Transformation;
 import game_engine_opengl2.utils.Utils;
 
@@ -38,9 +39,11 @@ public class RenderManager {
         shader.createUniform("ambientLight");
         // Material uniforms are optimized away by shader compiler if unused
         shader.createMaterialUniform("material");
+        shader.createUniform("specularPower");
+        shader.createDirectionalLightUniform("directionalLight");
     }
 
-    public void render(Entity entity, Camera camera)
+    public void render(Entity entity, Camera camera, DirectionalLight directionalLight)
     {
         Model model = entity.getModel();
         clear();
@@ -57,6 +60,8 @@ public class RenderManager {
         // Material uniform not available
         shader.setUniform("material", entity.getModel().getMaterial());
         shader.setUniform("ambientLight",Consts.AMBIENT_LIGHT);
+        shader.setUniform("specularPower",Consts.SPECULAR_POWER);
+        shader.setUniform("directionalLight", directionalLight);
 
         GL30.glBindVertexArray(model.getId());
         GL20.glEnableVertexAttribArray(0);

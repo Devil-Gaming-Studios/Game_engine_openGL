@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
 import entity.Material;
+import game_engine_opengl2.lighting.DirectionalLight;
 
 public class ShaderManager {
     private final int programID;
@@ -35,12 +36,20 @@ public class ShaderManager {
         uniforms.put(uniformName, uniformLocation);
     }
 
+    public void createDirectionalLightUniform(String uniformName) throws Exception
+    {
+        createUniform(uniformName + ".colour");
+        createUniform(uniformName + ".direction");
+        createUniform(uniformName + ".intensity");
+    }
+
     public void createMaterialUniform(String uniformName) throws Exception
     {
         createUniform(uniformName + ".ambient");
         createUniform(uniformName + ".diffuse");
         createUniform(uniformName + ".specular");
         createUniform(uniformName + ".hasTexture");
+        createUniform(uniformName + ".reflectance");
     }
 
     public void setUniform(String uniformname,Matrix4f value)
@@ -71,10 +80,19 @@ public class ShaderManager {
 
     public void setUniform(String uniformName, Material material)
     {
+
         setUniform(uniformName + ".ambient", material.getAmbientColour());
         setUniform(uniformName + ".diffuse",material.getDiffuseColour());
         setUniform(uniformName + ".specular",material.getSpecularColour());
         setUniform(uniformName + ".hasTexture",material.hasTexture() ? 1:0);
+        setUniform(uniformName + ".reflectance",material.getReflectance());
+    }
+
+    public void setUniform(String uniformName,DirectionalLight directionalLight)
+    {
+        setUniform(uniformName + ".colour", directionalLight.getColour());
+        setUniform(uniformName + ".direction", directionalLight.getDirection());
+        setUniform(uniformName + ".intensity", directionalLight.getIntensity());
     }
 
     public void setUniform( String uniformname,int value)

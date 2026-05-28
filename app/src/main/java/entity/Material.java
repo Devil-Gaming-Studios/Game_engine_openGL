@@ -59,7 +59,7 @@ public class Material {
 
     public Vector4f getDiffuseColour()
     {
-        return ambientColour;
+        return diffuseColour;
     }
 
     public void setDiffuseColour(Vector4f diffuseColour)
