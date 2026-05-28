@@ -1,7 +1,5 @@
 package game_engine_opengl2;
 
-import javax.print.attribute.standard.MediaName;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -12,6 +10,7 @@ import entity.Model;
 import entity.Texture;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
+import game_engine_opengl2.lighting.SpotLight;
 
 public class TestGame implements ILogic
 {
@@ -29,6 +28,7 @@ public class TestGame implements ILogic
     private float lightAngle;
     private DirectionalLight directionalLight;
     private PointLight pointLight;
+    private SpotLight spotLight;
     
     public TestGame(WindowManager windowManager)
     {
@@ -44,72 +44,25 @@ public class TestGame implements ILogic
     public void init() throws Exception
     {
         renderer.init();
-        // float[] vertices = new float[] {
-        //     -0.5f, 0.5f, 0.5f,
-        //     -0.5f, -0.5f, 0.5f,
-        //     0.5f, -0.5f, 0.5f,
-        //     0.5f, 0.5f, 0.5f,
-        //     -0.5f, 0.5f, -0.5f,
-        //     0.5f, 0.5f, -0.5f,
-        //     -0.5f, -0.5f, -0.5f,
-        //     0.5f, -0.5f, -0.5f,
-        //     -0.5f, 0.5f, -0.5f,
-        //     0.5f, 0.5f, -0.5f,
-        //     -0.5f, 0.5f, 0.5f,
-        //     0.5f, 0.5f, 0.5f,
-        //     0.5f, 0.5f, 0.5f,
-        //     0.5f, -0.5f, 0.5f,
-        //     -0.5f, 0.5f, 0.5f,
-        //     -0.5f, -0.5f, 0.5f,
-        //     -0.5f, -0.5f, -0.5f,
-        //     0.5f, -0.5f, -0.5f,
-        //     -0.5f, -0.5f, 0.5f,
-        //     0.5f, -0.5f, 0.5f,
-        // };
-        // float[] textureCoords = new float[]{
-        //             0.0f, 0.0f,
-        //             0.0f, 0.5f,
-        //             0.5f, 0.5f,
-        //             0.5f, 0.0f,
-        //             0.0f, 0.0f,
-        //             0.5f, 0.0f,
-        //             0.0f, 0.5f,
-        //             0.5f, 0.5f,
-        //             0.0f, 0.5f,
-        //             0.5f, 0.5f,
-        //             0.0f, 1.0f,
-        //             0.5f, 1.0f,
-        //             0.0f, 0.0f,
-        //             0.0f, 0.5f,
-        //             0.5f, 0.0f,
-        //             0.5f, 0.5f,
-        //             0.5f, 0.0f,
-        //             1.0f, 0.0f,
-        //             0.5f, 0.5f,
-        //             1.0f, 0.5f,
-        // };
-        // int[] indices = new int[]{
-        //             0, 1, 3, 3, 1, 2,
-        //             8, 10, 11, 9, 8, 11,
-        //             12, 13, 7, 5, 12, 7,
-        //             14, 15, 6, 4, 14, 6,
-        //             16, 18, 19, 17, 16, 19,
-        //             4, 6, 7, 5, 4, 7,
-        // };
-      
-            Model model = loader.loadResourceModel("/models/Datsun_280Z.obj");
-            model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
-            entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
-            
-            float lightIntensity = 1.0f;
-            Vector3f lightPosition = new Vector3f(0,0,-3.2f);
-            Vector3f lightColour = new Vector3f(1,1,1);
-            pointLight = new PointLight(lightColour,lightPosition, lightIntensity, 0,0,1);
+        Model model = loader.loadResourceModel("/models/Datsun_280Z.obj");
+        model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
+        entity = new Entity(model, new Vector3f(1,0,0), new Vector3f(0,0,0),1);
+        
+        //point light
+        float lightIntensity = 1.0f;
+        Vector3f lightPosition = new Vector3f(0,0,-3.2f);
+        Vector3f lightColour = new Vector3f(1,1,1);
+        pointLight = new PointLight(lightColour,lightPosition, lightIntensity, 0,0,1);
 
+        //directional light
+        lightPosition = new Vector3f(-1,-10,0);
+        lightColour = new Vector3f(1,1,1);
+        directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
 
-            lightPosition = new Vector3f(-1,-10,0);
-            lightColour = new Vector3f(1,1,1);
-            directionalLight = new DirectionalLight(lightColour, lightPosition, lightIntensity);
+        //spot light
+        Vector3f coneDirection = new Vector3f(0,0,1);
+        float cutoff = (float)Math.cos(Math.toRadians(180));
+        spotLight = new SpotLight(pointLight, coneDirection,cutoff );
     }
 
     @Override
@@ -139,6 +92,17 @@ public class TestGame implements ILogic
         if(window.isKeyPressed(GLFW.GLFW_KEY_P))
         {
             pointLight.getPosition().x -= 0.1f;
+        }
+
+        float lightPos = spotLight.getPointLight().getPosition().z;
+        if(window.isKeyPressed(GLFW.GLFW_KEY_N))
+        {
+            spotLight.getPointLight().getPosition().z = lightPos + 0.1f;
+        }
+
+        if(window.isKeyPressed(GLFW.GLFW_KEY_M))
+        {
+            spotLight.getPointLight().getPosition().z = lightPos - 0.1f;
         }
     }
 
@@ -189,7 +153,7 @@ public class TestGame implements ILogic
         }
 
         window.setClearColour(0.0f,0.0f,0.0f,0.0f);
-        renderer.render(entity,camera,directionalLight,pointLight);
+        renderer.render(entity,camera,directionalLight,pointLight,spotLight);
     }
 
     @Override

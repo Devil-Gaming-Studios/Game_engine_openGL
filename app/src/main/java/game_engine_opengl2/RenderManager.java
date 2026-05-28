@@ -10,6 +10,7 @@ import entity.Entity;
 import entity.Model;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
+import game_engine_opengl2.lighting.SpotLight;
 import game_engine_opengl2.utils.Transformation;
 import game_engine_opengl2.utils.Utils;
 
@@ -43,9 +44,10 @@ public class RenderManager {
         shader.createUniform("specularPower");
         shader.createDirectionalLightUniform("directionalLight");
         shader.createPointLightUniform("pointLight");
+        shader.createSpotLightUniform("spotLight");
     }
 
-    public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight)
+    public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
     {
         Model model = entity.getModel();
         clear();
@@ -65,6 +67,7 @@ public class RenderManager {
         shader.setUniform("specularPower",Consts.SPECULAR_POWER);
         shader.setUniform("directionalLight", directionalLight);
         shader.setUniform("pointLight",pointLight);
+        shader.setUniform("spotLight",spotLight);
 
         GL30.glBindVertexArray(model.getId());
         GL20.glEnableVertexAttribArray(0);

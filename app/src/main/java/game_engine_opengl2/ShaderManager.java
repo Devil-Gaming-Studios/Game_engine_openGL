@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryStack;
 import entity.Material;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
+import game_engine_opengl2.lighting.SpotLight;
 
 public class ShaderManager {
     private final int programID;
@@ -63,7 +64,12 @@ public class ShaderManager {
         createUniform(uniformName + ".constant");
     }
 
-   
+   public void createSpotLightUniform(String uniformName) throws Exception
+   {
+        createUniform(uniformName + ".cutoff");
+        createPointLightUniform(uniformName + ".pl");
+        createUniform(uniformName + ".conedir");
+   }
 
     public void setUniform(String uniformname,Matrix4f value)
     {
@@ -116,6 +122,13 @@ public class ShaderManager {
         setUniform(uniformName+".linear",pointLight.getLinear());
         setUniform(uniformName+".exponent",pointLight.getExponent());
         setUniform(uniformName+".constant", pointLight.getConstant());
+    }
+
+    public void setUniform(String uniformName, SpotLight spotLight)
+    {
+        setUniform(uniformName+".cutoff", spotLight.getCutoff());
+        setUniform(uniformName+".pl", spotLight.getPointLight());
+        setUniform(uniformName+".conedir", spotLight.getConeDirection());
     }
 
     public void setUniform( String uniformname,int value)
