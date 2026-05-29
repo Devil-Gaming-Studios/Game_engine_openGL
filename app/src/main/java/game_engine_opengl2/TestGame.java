@@ -15,6 +15,7 @@ import entity.Texture;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
 import game_engine_opengl2.lighting.SpotLight;
+import game_engine_opengl2.rendering.RenderManager;
 
 public class TestGame implements ILogic
 {
