@@ -1,10 +1,14 @@
 package game_engine_opengl2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import entity.Entity;
 import entity.Model;
@@ -18,6 +22,8 @@ import game_engine_opengl2.utils.Utils;
 public class RenderManager {
     private final WindowManager window;
     private ShaderManager shader;
+
+    private Map<Model, List<Entity>> entities = new HashMap<>();
 
     public RenderManager(WindowManager windowManager)
     {
@@ -43,13 +49,58 @@ public class RenderManager {
         shader.createMaterialUniform("material");
         shader.createUniform("specularPower");
         shader.createDirectionalLightUniform("directionalLight");
-        shader.createPointLightUniform("pointLight");
-        shader.createSpotLightUniform("spotLight");
+        shader.createPointLightListUniform("pointLights",5);
+        shader.createSpotLightListUniform("spotLights",5);
     }
 
-    public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight)
+    public void bind(Model model)
     {
-        Model model = entity.getModel();
+        GL30.glBindVertexArray(model.getId());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+        shader.setUniform("material", model.getMaterial());
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
+    }
+
+    public void unbind()
+    {
+        GL20.glDisableVertexAttribArray(0);//position 
+        GL20.glDisableVertexAttribArray(1);//texture coordinates
+        GL20.glDisableVertexAttribArray(2);
+        GL30.glBindVertexArray(0);
+        
+    }
+
+    public void prepare(Entity entity,Camera camera)
+    {
+        shader.setUniform("textureSampler",0);
+        shader.setUniform("transformationMatrix",Transformation.createTransformationMatrix(entity));
+        shader.setUniform("viewMatrix",Transformation.getViewMatrix(camera));
+    }
+
+    public void renderLights(Camera camera, PointLight[] pointLights, SpotLight[] spotLights, DirectionalLight directionalLight)
+    {
+        shader.setUniform("ambientLight",Consts.AMBIENT_LIGHT);
+        shader.setUniform("specularPower",Consts.SPECULAR_POWER);
+        shader.setUniform("directionalLight", directionalLight);
+
+        int numLights = spotLights != null ? spotLights.length : 0;
+        for(int i = 0; i < numLights;i++)
+        {
+            shader.setUniform("spotLights",spotLights[i],i);
+        }
+
+        numLights = pointLights != null ? pointLights.length : 0;
+        for(int i = 0; i < numLights;i++)
+        {
+            shader.setUniform("pointLights",pointLights[i],i);
+        }
+    }
+
+    public void render(Camera camera, DirectionalLight directionalLight, PointLight[] pointLights, SpotLight[] spotLights)
+    {
         clear();
 
         if(window.isResize())
@@ -57,30 +108,35 @@ public class RenderManager {
             GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
         }
         shader.bind();
-        shader.setUniform("textureSampler",0);
-        shader.setUniform("transformationMatrix",Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix",window.updateProjectionMatrix());
-        shader.setUniform("viewMatrix",Transformation.getViewMatrix(camera));
-        // Material uniform not available
-        shader.setUniform("material", entity.getModel().getMaterial());
-        shader.setUniform("ambientLight",Consts.AMBIENT_LIGHT);
-        shader.setUniform("specularPower",Consts.SPECULAR_POWER);
-        shader.setUniform("directionalLight", directionalLight);
-        shader.setUniform("pointLight",pointLight);
-        shader.setUniform("spotLight",spotLight);
+        renderLights(camera, pointLights, spotLights, directionalLight);
 
-        GL30.glBindVertexArray(model.getId());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT,0);
-        GL20.glDisableVertexAttribArray(0);//position 
-        GL20.glDisableVertexAttribArray(1);//texture coordinates
-        GL20.glDisableVertexAttribArray(2);
-        GL30.glBindVertexArray(0);
+        for(Model model : entities.keySet())
+        {
+            bind(model);
+            List<Entity> entityList = entities.get(model);
+            for(Entity entity : entityList)
+            {
+                prepare(entity, camera);
+                GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT,0);
+            }
+            unbind();
+        }
+        entities.clear();
         shader.unbind();
+    }
+
+    public void processEntity(Entity entity)
+    {
+        List<Entity> entityList = entities.get(entity.getModel());
+        if(entityList != null)
+            entityList.add(entity);
+        else
+        {
+            List<Entity> newEntityList = new ArrayList<>();
+            newEntityList.add(entity);
+            entities.put(entity.getModel(), newEntityList);
+        }
     }
     
     public void clear()
