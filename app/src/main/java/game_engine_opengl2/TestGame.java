@@ -10,8 +10,10 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import entity.Entity;
+import entity.Material;
 import entity.Model;
 import entity.Texture;
+import entity.terrain.Terrain;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
 import game_engine_opengl2.lighting.SpotLight;
@@ -26,6 +28,8 @@ public class TestGame implements ILogic
     public final ObjectLoader loader;
 
     private List<Entity> entities;
+    private List<Terrain> terrains;
+
     private Camera camera;
     
     Vector3f cameraInc;
@@ -54,6 +58,12 @@ public class TestGame implements ILogic
         model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
 
         entities = new ArrayList<>();
+        terrains = new ArrayList<>();
+        Terrain terrain = new Terrain(new Vector3f(0, -1, -800), loader, new Material(new Texture(loader.loadResourceTexture("textures/grassBlock.jpg")),0.1f));
+        Terrain terrain2 = new Terrain(new Vector3f(-800, -1, -800), loader, new Material(new Texture(loader.loadResourceTexture("textures/HatchbackYellow.png")),0.1f));
+        terrains.add(terrain);
+        terrains.add(terrain2);
+
         Random rnd = new Random();
 
         for(int i = 0; i< 200; i++ )
@@ -172,6 +182,11 @@ public class TestGame implements ILogic
         for(Entity entity : entities)
         {
             renderer.processEntity(entity);
+        }
+
+        for(Terrain terrain : terrains)
+        {
+            renderer.processTerrain(terrain);
         }
     }   
 

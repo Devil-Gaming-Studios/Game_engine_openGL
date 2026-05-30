@@ -1,6 +1,7 @@
 package game_engine_opengl2.utils;
 
 import entity.Entity;
+import entity.terrain.Terrain;
 import game_engine_opengl2.Camera;
 
 import org.joml.Matrix4f;
@@ -17,6 +18,13 @@ public class Transformation {
             rotateZ((float) Math.toRadians(entity.getRotation().z)).
             scale(entity.getScale());
 
+        return matrix;
+    }
+
+    public static Matrix4f createTransformationMatrix(Terrain terrain)
+    {
+        Matrix4f matrix = new Matrix4f();
+        matrix.identity().translate(terrain.getPosition()).scale(1);
         return matrix;
     }
 

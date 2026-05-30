@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL11;
 
 import entity.Entity;
 import entity.Model;
+import entity.terrain.Terrain;
+import entity.terrain.TerrainRenderer;
 import game_engine_opengl2.Camera;
 import game_engine_opengl2.Consts;
 import game_engine_opengl2.ShaderManager;
@@ -19,18 +21,20 @@ import game_engine_opengl2.lighting.SpotLight;
 public class RenderManager {
     private final WindowManager window;
     private EntityRender entityRenderer;
+    private TerrainRenderer terrainRenderer;
 
     public RenderManager(WindowManager windowManager)
     {
         window = windowManager;
-        
     }
 
     public void init() throws Exception
     {
         entityRenderer = new EntityRender();
+        terrainRenderer = new TerrainRenderer();
         
         entityRenderer.init();
+        terrainRenderer.init();
 
     }
 
@@ -80,6 +84,7 @@ public class RenderManager {
         }
         
         entityRenderer.render(camera, pointLights,spotLights,directionalLight);
+        terrainRenderer.render(camera, pointLights,spotLights,directionalLight);
     }
 
     public void processEntity(Entity entity)
@@ -94,14 +99,21 @@ public class RenderManager {
             entityRenderer.getEntities().put(entity.getModel(), newEntityList);
         }
     }
+
+    public void processTerrain(Terrain terrain)
+    {
+        terrainRenderer.getTerrains().add(terrain);
+    }
     
     public void clear()
     {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        
     }
 
     public void cleanup()
     {
         entityRenderer.cleanup();
+        terrainRenderer.cleanup();
     }
 }
