@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import entity.Entity;
 import entity.Model;
+import entity.SceneManager;
 import entity.terrain.Terrain;
 import entity.terrain.TerrainRenderer;
 import game_engine_opengl2.Camera;
@@ -74,7 +75,7 @@ public class RenderManager {
         }
     }
 
-    public void render(Camera camera, DirectionalLight directionalLight, PointLight[] pointLights, SpotLight[] spotLights)
+    public void render(Camera camera, SceneManager sceneManager)
     {
         clear();
 
@@ -83,8 +84,8 @@ public class RenderManager {
             GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
         }
         
-        entityRenderer.render(camera, pointLights,spotLights,directionalLight);
-        terrainRenderer.render(camera, pointLights,spotLights,directionalLight);
+        entityRenderer.render(camera, sceneManager.getPointLights(),sceneManager.getSpotLights(),sceneManager.getDirectionalLight());
+        terrainRenderer.render(camera, sceneManager.getPointLights(),sceneManager.getSpotLights(),sceneManager.getDirectionalLight());
     }
 
     public void processEntity(Entity entity)
