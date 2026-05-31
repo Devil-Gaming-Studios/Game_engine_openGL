@@ -8,6 +8,7 @@ import javax.script.ScriptEngineManager;
 import org.joml.Random;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -16,7 +17,9 @@ import entity.Material;
 import entity.Model;
 import entity.SceneManager;
 import entity.Texture;
+import entity.terrain.BlendMapTerrain;
 import entity.terrain.Terrain;
+import entity.terrain.TerrainTexture;
 import game_engine_opengl2.lighting.DirectionalLight;
 import game_engine_opengl2.lighting.PointLight;
 import game_engine_opengl2.lighting.SpotLight;
@@ -60,12 +63,19 @@ public class TestGame implements ILogic
         renderer.init();
 
         Model model = loader.loadResourceModel("/models/Datsun_280Z.obj");
-        model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
+        model.setTexture(new Texture(loader.loadResourceTexture("/textures/terrain.jpg")),1.0f);
+
+        TerrainTexture backgroundTexture = new TerrainTexture(loader.loadResourceTexture("/textures/terrain.jpg"));
+        TerrainTexture redTexture = new TerrainTexture(loader.loadResourceTexture("/textures/grass.jpg"));
+        TerrainTexture greenTexture = new TerrainTexture(loader.loadResourceTexture("/textures/rock.jpg"));
+        TerrainTexture blueTexture = new TerrainTexture(loader.loadResourceTexture("/textures/dirt.jpg"));
+        TerrainTexture blendMap = new TerrainTexture(loader.loadResourceTexture("/textures/blendMap2.png"));
+        BlendMapTerrain blendMapTerrain = new BlendMapTerrain(backgroundTexture, redTexture, greenTexture, blueTexture );
 
         // entities = new ArrayList<>();
         // terrains = new ArrayList<>();
-        Terrain terrain = new Terrain(new Vector3f(0, -1, -800), loader, new Material(new Texture(loader.loadResourceTexture("textures/grassBlock.jpg")),0.1f));
-        Terrain terrain2 = new Terrain(new Vector3f(-800, -1, -800), loader, new Material(new Texture(loader.loadResourceTexture("textures/HatchbackYellow.png")),0.1f));
+        Terrain terrain = new Terrain(new Vector3f(0, -1, -800), loader, new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f),0.1f), blendMapTerrain, blendMap);
+        Terrain terrain2 = new Terrain(new Vector3f(-800, -1, -800), loader, new Material(new Vector4f(0.0f, 0.0f, 0.0f, 0.0f),0.1f), blendMapTerrain, blendMap);
         
         sceneManager.addTerrains(terrain);
         sceneManager.addTerrains(terrain2);
