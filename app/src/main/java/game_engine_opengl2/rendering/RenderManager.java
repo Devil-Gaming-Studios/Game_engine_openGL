@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 
 import entity.Entity;
 import entity.Model;
@@ -23,6 +25,8 @@ public class RenderManager {
     private final WindowManager window;
     private EntityRender entityRenderer;
     private TerrainRenderer terrainRenderer;
+
+    private static boolean isCulling = false;
 
     public RenderManager(WindowManager windowManager)
     {
@@ -88,6 +92,22 @@ public class RenderManager {
         terrainRenderer.render(camera, sceneManager.getPointLights(),sceneManager.getSpotLights(),sceneManager.getDirectionalLight());
     }
 
+    public static void enableCulling()
+    {
+        if(!isCulling)
+        {
+            GL11.glEnable(GL_CULL_FACE);
+            GL11.glCullFace(GL_BACK);
+            isCulling = true;
+        }
+    }
+
+    public static void disableCulling()
+    {
+        GL11.glDisable(GL_CULL_FACE);
+        isCulling = false;
+    }
+    
     public void processEntity(Entity entity)
     {
         List<Entity> entityList = entityRenderer.getEntities().get(entity.getModel());

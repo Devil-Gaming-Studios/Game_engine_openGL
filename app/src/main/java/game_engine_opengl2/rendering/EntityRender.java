@@ -33,23 +33,7 @@ public class EntityRender implements IRenderer<Entity>{
         
     }
     
-    @Override
-    public void bind(Model model) {
-        GL30.glBindVertexArray(model.getId());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        shader.setUniform("material", model.getMaterial());
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
-        
-    }
-
-    @Override
-    public void cleanup() {
-        shader.cleanup();
-        
-    }
+    
 
     @Override
     public void init() throws Exception {
@@ -106,11 +90,35 @@ public class EntityRender implements IRenderer<Entity>{
     }
 
     @Override
+    public void bind(Model model) {
+        GL30.glBindVertexArray(model.getId());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+
+        if(model.getMaterial().isDisableCulling())
+            RenderManager.disableCulling();
+        else
+            RenderManager.enableCulling();
+        
+        shader.setUniform("material", model.getMaterial());
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
+        
+    }
+
+    @Override
     public void unbind() {
         GL20.glDisableVertexAttribArray(0);//position 
         GL20.glDisableVertexAttribArray(1);//texture coordinates
         GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
+        
+    }
+
+    @Override
+    public void cleanup() {
+        shader.cleanup();
         
     }
 

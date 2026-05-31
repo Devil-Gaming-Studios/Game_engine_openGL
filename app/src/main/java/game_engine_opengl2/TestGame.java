@@ -63,7 +63,8 @@ public class TestGame implements ILogic
         renderer.init();
 
         Model model = loader.loadResourceModel("/models/Datsun_280Z.obj");
-        model.setTexture(new Texture(loader.loadResourceTexture("/textures/terrain.jpg")),1.0f);
+        model.setTexture(new Texture(loader.loadResourceTexture("/textures/HatchbackYellow.png")),1.0f);
+        model.getMaterial().setDisableCulling(true);
 
         TerrainTexture backgroundTexture = new TerrainTexture(loader.loadResourceTexture("/textures/terrain.jpg"));
         TerrainTexture redTexture = new TerrainTexture(loader.loadResourceTexture("/textures/grass.jpg"));

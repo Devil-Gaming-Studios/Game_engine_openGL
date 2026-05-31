@@ -42,6 +42,8 @@ public class TerrainRenderer implements IRenderer<Terrain>{
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
 
+        RenderManager.enableCulling();
+        
         shader.setUniform("backgroundTexture",0);
         shader.setUniform("redTexture",1);
         shader.setUniform("greenTexture",2);
